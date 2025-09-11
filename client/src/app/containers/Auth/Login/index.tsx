@@ -2,7 +2,7 @@
 
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
-import { loginRequest } from "@/app/stores/reducers/auth";
+import { loginRequest } from "@/app/stores/reducers/authSlice";
 
 export default function Login() {
     const dispatch = useDispatch();

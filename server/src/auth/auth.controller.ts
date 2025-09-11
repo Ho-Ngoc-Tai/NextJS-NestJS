@@ -1,25 +1,31 @@
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body, Res, Get } from '@nestjs/common'
+import { Response } from 'express'
+import { AuthService } from './auth.service'
+import { LoginDto } from './dto/login.dto'
 
 @Controller('auth')
 export class AuthController {
+  constructor(private authService: AuthService) {}
+
   @Post('login')
-  login(@Body() body: { email: string; password: string }) {
-    const { email, password } = body;
+  async login(@Body() body: LoginDto, @Res({ passthrough: true }) res: Response) {
+    const user = await this.authService.validateUser(body.email, body.password)
+    if (!user) return { statusCode: 401, message: 'Invalid credentials' }
 
-    if (email === 'test@example.com' && password === '123456') {
-      return { message: 'Login success!', token: 'fake-jwt-token' };
-    } else {
-      return { message: 'Invalid credentials' };
-    }
+    const { accessToken, refreshToken, user: safeUser } = await this.authService.login(user)
+
+    // set httpOnly cookie
+    res.cookie('refresh_token', refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+    })
+
+    return { accessToken, user: safeUser }
   }
 
-  @Post('register')
-  register(@Body() body: { email: string; password: string }) {
-    return { message: 'User registered!', user: body };
-  }
-
-  @Get('ping')
-  ping() {
-    return { message: 'Auth API is working!' };
+  @Get('profile')
+  async profile() {
+    return { message: 'This is profile demo endpoint' }
   }
 }

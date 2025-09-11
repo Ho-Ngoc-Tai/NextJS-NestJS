@@ -2,7 +2,9 @@
 
 import { ReactNode } from "react";
 import { ThemeProvider, CssBaseline } from "@mui/material";
-import theme from "../../theme";
+
+import { Provider } from "react-redux";
+import theme from "@/app/theme";
 
 export default function RootLayout({ children }: { children: ReactNode }) {
     return (
