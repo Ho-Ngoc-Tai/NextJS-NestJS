@@ -1,32 +1,80 @@
-'use client'
-import React from 'react'
-import { Box, TextField, Button, Typography, Alert, CircularProgress } from '@mui/material'
-import { useForm } from 'react-hook-form'
-import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { login } from '../../store/authSlice'
+"use client";
 
-type FormData = { email: string; password: string }
+import { useState } from "react";
+import {
+    Box,
+    Card,
+    Tabs,
+    Tab,
+    TextField,
+    Button,
+    Typography,
+} from "@mui/material";
 
-export default function LoginForm() {
-    const { register, handleSubmit } = useForm<FormData>()
-    const dispatch = useAppDispatch()
-    const { loading, error } = useAppSelector((s) => s.auth)
-
-    const onSubmit = (data: FormData) => {
-        dispatch(login(data))
-    }
+export default function LoginPage() {
+    const [tab, setTab] = useState(0);
 
     return (
-        <Box sx={{ maxWidth: 420, mx: 'auto', mt: 8, p: 3, boxShadow: 3, borderRadius: 2 }}>
-            <Typography variant="h5" sx={{ mb: 2 }}>Đăng nhập</Typography>
-            {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <TextField label="Email" fullWidth margin="normal" {...register('email', { required: true })} />
-                <TextField label="Mật khẩu" type="password" fullWidth margin="normal" {...register('password', { required: true })} />
-                <Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }} disabled={loading}>
-                    {loading ? <CircularProgress size={20} /> : 'Đăng nhập'}
-                </Button>
-            </form>
+        <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            minHeight="100vh"
+            sx={{ backgroundColor: "background.default" }}
+        >
+            <Card
+                sx={{
+                    width: 420,
+                    p: 4,
+                    borderRadius: 4,
+                    backgroundColor: "background.paper",
+                    boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
+                }}
+            >
+                <Tabs
+                    value={tab}
+                    onChange={(_, v) => setTab(v)}
+                    variant="fullWidth"
+                    sx={{ mb: 3 }}
+                >
+                    <Tab label="Log In" />
+                    <Tab label="Sign Up" />
+                </Tabs>
+
+                {/* Login */}
+                {tab === 0 && (
+                    <Box display="flex" flexDirection="column" gap={2}>
+                        <Typography variant="h4" textAlign="center" mb={2}>
+                            Log In
+                        </Typography>
+                        <TextField label="Email" type="email" fullWidth />
+                        <TextField label="Password" type="password" fullWidth />
+                        <Button variant="contained" fullWidth sx={{ mt: 2 }}>
+                            Submit
+                        </Button>
+                        <Typography variant="body2" textAlign="center" mt={2}>
+                            <a href="#" style={{ color: "#ffeba7" }}>
+                                Forgot your password?
+                            </a>
+                        </Typography>
+                    </Box>
+                )}
+
+                {/* Signup */}
+                {tab === 1 && (
+                    <Box display="flex" flexDirection="column" gap={2}>
+                        <Typography variant="h4" textAlign="center" mb={2}>
+                            Sign Up
+                        </Typography>
+                        <TextField label="Full Name" type="text" fullWidth />
+                        <TextField label="Email" type="email" fullWidth />
+                        <TextField label="Password" type="password" fullWidth />
+                        <Button variant="contained" fullWidth sx={{ mt: 2 }}>
+                            Submit
+                        </Button>
+                    </Box>
+                )}
+            </Card>
         </Box>
-    )
+    );
 }

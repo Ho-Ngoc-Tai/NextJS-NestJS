@@ -6,8 +6,8 @@ import { AuthController } from './auth.controller';
 @Module({
   imports: [
     JwtModule.register({
-      secret: 'your-secret-key', // 👈 đổi thành biến môi trường sau
-      signOptions: { expiresIn: '15m' },
+      secret: process.env.JWT_SECRET || 'demo_secret',
+      signOptions: { expiresIn: '1h' },
     }),
   ],
   controllers: [AuthController],

@@ -1,48 +1,80 @@
 "use client";
 
-import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
-import { loginRequest } from "@/app/stores/reducers/authSlice";
+import {
+    Box,
+    Card,
+    Tabs,
+    Tab,
+    TextField,
+    Button,
+    Typography,
+} from "@mui/material";
 
-export default function Login() {
-    const dispatch = useDispatch();
-    const { loading, error } = useSelector((state: any) => state.auth);
-
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        dispatch(loginRequest({ email, password }));
-    };
+export default function LoginPage() {
+    const [tab, setTab] = useState(0);
 
     return (
-        <div className="flex justify-center items-center h-screen">
-            <form onSubmit={handleSubmit} className="p-6 border rounded shadow-md w-80">
-                <h2 className="text-xl font-bold mb-4">Login</h2>
-                <input
-                    type="email"
-                    placeholder="Email"
-                    className="border w-full p-2 mb-2"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    className="border w-full p-2 mb-2"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-                <button
-                    type="submit"
-                    className="bg-blue-500 text-white w-full py-2 rounded"
-                    disabled={loading}
+        <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            minHeight="100vh"
+            sx={{ backgroundColor: "background.default" }}
+        >
+            <Card
+                sx={{
+                    width: 420,
+                    p: 4,
+                    borderRadius: 4,
+                    backgroundColor: "background.paper",
+                    boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
+                }}
+            >
+                <Tabs
+                    value={tab}
+                    onChange={(_, v) => setTab(v)}
+                    variant="fullWidth"
+                    sx={{ mb: 3 }}
                 >
-                    {loading ? "Loading..." : "Login"}
-                </button>
-                {error && <p className="text-red-500 mt-2">{error}</p>}
-            </form>
-        </div>
+                    <Tab label="Log In" />
+                    <Tab label="Sign Up" />
+                </Tabs>
+
+                {/* Login */}
+                {tab === 0 && (
+                    <Box display="flex" flexDirection="column" gap={2}>
+                        <Typography variant="h4" textAlign="center" mb={2}>
+                            Log In
+                        </Typography>
+                        <TextField label="Email" type="email" fullWidth />
+                        <TextField label="Password" type="password" fullWidth />
+                        <Button variant="contained" fullWidth sx={{ mt: 2 }}>
+                            Submit
+                        </Button>
+                        <Typography variant="body2" textAlign="center" mt={2}>
+                            <a href="#" style={{ color: "#ffeba7" }}>
+                                Forgot your password?
+                            </a>
+                        </Typography>
+                    </Box>
+                )}
+
+                {/* Signup */}
+                {tab === 1 && (
+                    <Box display="flex" flexDirection="column" gap={2}>
+                        <Typography variant="h4" textAlign="center" mb={2}>
+                            Sign Up
+                        </Typography>
+                        <TextField label="Full Name" type="text" fullWidth />
+                        <TextField label="Email" type="email" fullWidth />
+                        <TextField label="Password" type="password" fullWidth />
+                        <Button variant="contained" fullWidth sx={{ mt: 2 }}>
+                            Submit
+                        </Button>
+                    </Box>
+                )}
+            </Card>
+        </Box>
     );
 }

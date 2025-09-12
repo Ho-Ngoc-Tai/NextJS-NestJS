@@ -1,31 +1,18 @@
-import { Controller, Post, Body, Res, Get } from '@nestjs/common'
-import { Response } from 'express'
-import { AuthService } from './auth.service'
-import { LoginDto } from './dto/login.dto'
+import { Controller, Post, Body, Get } from '@nestjs/common';
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
   @Post('login')
-  async login(@Body() body: LoginDto, @Res({ passthrough: true }) res: Response) {
-    const user = await this.authService.validateUser(body.email, body.password)
-    if (!user) return { statusCode: 401, message: 'Invalid credentials' }
-
-    const { accessToken, refreshToken, user: safeUser } = await this.authService.login(user)
-
-    // set httpOnly cookie
-    res.cookie('refresh_token', refreshToken, {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-    })
-
-    return { accessToken, user: safeUser }
+  async login(@Body() body: { email: string; password: string }) {
+    const user = await this.authService.validateUser(body.email, body.password);
+    return this.authService.login(user);
   }
 
   @Get('profile')
-  async profile() {
-    return { message: 'This is profile demo endpoint' }
+  getProfile() {
+    return { message: 'This is a protected route' };
   }
 }
