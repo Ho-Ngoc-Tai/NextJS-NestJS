@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Manchester United Fanpage",
-  description: "A fanpage dedicated to Manchester United Football Club.",
+  title: "Login Page",
+  description: "A Login Page.",
 };
 
 export default function RootLayout({

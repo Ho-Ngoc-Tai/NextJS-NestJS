@@ -1,6 +1,6 @@
 import { call, put, takeLatest } from "redux-saga/effects";
-import { loginApi } from "@/app/lib/authApi";
 import { loginFailure, loginRequest, loginSuccess } from "@/app/stores/reducers/authSlice";
+import { loginApi } from "@/app/lib/auth/authApi";
 
 
 function* handleLogin(action: ReturnType<typeof loginRequest>) {

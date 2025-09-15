@@ -6,7 +6,7 @@ import * as bcrypt from 'bcrypt';
 export class AuthService {
   // Demo user giả định (thực tế sẽ lấy từ DB)
   private users = [
-    { id: 1, email: 'test@example.com', password: '$2b$10$abcdefghi1234567890abcdEfGhIJklmnopqrstuv' } // password hash giả
+    { id: 1, email: 'test@example.com', password: '$2b$10$abcdefghi1234567890abcdEfGhIJklmnopqrstuv' }
   ];
 
   constructor(private jwtService: JwtService) {}
@@ -18,7 +18,6 @@ export class AuthService {
       throw new UnauthorizedException('User not found');
     }
 
-    // So sánh mật khẩu (ở đây demo => bỏ bcrypt đi cho nhanh)
     // Nếu muốn test thực tế thì lưu hash bcrypt vào users và dùng compare
     // const isPasswordValid = await bcrypt.compare(pass, user.password);
     const isPasswordValid = pass === '123456'; // demo password
