@@ -100,7 +100,7 @@ export default function LoginPage() {
                             variant="contained"
                             fullWidth
                             sx={{ mt: 2 }}
-                            onClick={handleLogin}
+                            // onClick={handleRegister}
                             disabled={loading}   // khi đang login thì disable nút
                         >
                             {loading ? "Logging in..." : "Submit"}
