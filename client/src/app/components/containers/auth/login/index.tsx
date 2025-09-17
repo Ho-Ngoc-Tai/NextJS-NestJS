@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     Box,
     Card,
@@ -11,8 +11,9 @@ import {
     Typography,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
+import router, { useRouter } from "next/navigation";
 import { loginRequest } from "@/app/stores/reducers/authSlice";
-import { makeSelectAuthError, makeSelectAuthLoading } from "@/app/stores/reducers/authSlice";
+import { makeSelectAuthError, makeSelectAuthLoading, makeSelectAuthUser } from "@/app/stores/reducers/authSlice";
 
 export default function LoginPage() {
     const [tab, setTab] = useState(0);
@@ -20,13 +21,22 @@ export default function LoginPage() {
     const [password, setPassword] = useState("");
     const loading = useSelector(makeSelectAuthLoading);
     const error = useSelector(makeSelectAuthError);
+    const user = useSelector(makeSelectAuthUser);
 
     const dispatch = useDispatch(); // Replace with actual dispatch from Redux
+    const router = useRouter();
 
     const handleLogin = () => {
         // Dispatch login action
         dispatch(loginRequest({ email, password }));
     }
+
+    //Redirect admim khi login thành công
+    useEffect(() => {
+        if (user) {
+            router.push("/dashboard");
+        }
+    }, [user, router]);
 
     return (
         <Box

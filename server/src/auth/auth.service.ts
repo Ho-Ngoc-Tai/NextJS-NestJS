@@ -20,7 +20,7 @@ export class AuthService {
 
     // Nếu muốn test thực tế thì lưu hash bcrypt vào users và dùng compare
     // const isPasswordValid = await bcrypt.compare(pass, user.password);
-    const isPasswordValid = pass === '123456'; // demo password
+    const isPasswordValid = pass === '123456';
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }

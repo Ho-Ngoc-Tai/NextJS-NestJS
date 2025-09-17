@@ -69,3 +69,7 @@ export const makeSelectIsAuthenticated = createSelector(
   (auth: AuthState) => !!auth.token
 );
 
+export const makeSelectAuthUser = createSelector(
+  [selectAuthState],
+  (auth: AuthState) => auth.user
+);
