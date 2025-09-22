@@ -1,23 +1,24 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import createSagaMiddleware from "redux-saga";
 import authReducer from "./reducers/authSlice";
+import userReducer from "./reducers/dashboard/userSlice";
 import { authSaga } from "./sagas/auth";
-import { useReducer } from "react";
 
 const sagaMiddleware = createSagaMiddleware();
 
+const rootReducer = combineReducers({
+  auth: authReducer,
+  dashboard: combineReducers({
+    user: userReducer,
+  }),
+});
+
 export const store = configureStore({
-  reducer: {
-    auth: authReducer,
-    dashboard: {
-      user: useReducer,
-    },
-  },
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ thunk: false }).concat(sagaMiddleware),
 });
 
-// chạy saga trực tiếp
 sagaMiddleware.run(authSaga);
 
 export type RootState = ReturnType<typeof store.getState>;

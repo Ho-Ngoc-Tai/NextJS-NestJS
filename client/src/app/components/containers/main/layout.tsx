@@ -17,7 +17,7 @@ export default function Layout({ children }: LayoutProps) {
             {/* Main Content */}
             <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                 <Header />
-                <Box sx={{ p: 3, backgroundColor: '#f5f5f5', flex: 1 }}>
+                <Box sx={{ p: 3, backgroundColor: '#ffffffff', flex: 1 }}>
                     {children}
                 </Box>
             </Box>

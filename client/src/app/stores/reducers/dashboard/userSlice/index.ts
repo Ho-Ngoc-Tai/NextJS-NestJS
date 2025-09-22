@@ -1,13 +1,16 @@
 import { createSlice, createSelector, PayloadAction } from "@reduxjs/toolkit";
+import type { RootState } from "@/app/stores";
 
 export interface User {
-  id: string;
+  id: number;
+  name: string;
   email: string;
-  name?: string;
+  phone?: string;
+  website?: string;
 }
 
 export interface UserState {
-  users: User[];       // đổi từ profile -> users (mảng)
+  users: User[];
   loading: boolean;
   error: string | null;
 }
@@ -34,19 +37,49 @@ const userSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    addUser: (state, action: PayloadAction<User>) => {
+      state.users.push(action.payload);
+    },
+    updateUser: (state, action: PayloadAction<User>) => {
+      const idx = state.users.findIndex((u) => u.id === action.payload.id);
+      if (idx >= 0) state.users[idx] = action.payload;
+    },
+    removeUser: (state, action: PayloadAction<number>) => {
+      state.users = state.users.filter((u) => u.id !== action.payload);
+    },
     clearUsers: (state) => {
       state.users = [];
     },
   },
 });
 
-export const { fetchUsersRequest, fetchUsersSuccess, fetchUsersFailure, clearUsers } =
-  userSlice.actions;
+export const {
+  fetchUsersRequest,
+  fetchUsersSuccess,
+  fetchUsersFailure,
+  addUser,
+  updateUser,
+  removeUser,
+  clearUsers,
+} = userSlice.actions;
+
 export default userSlice.reducer;
 
 // --- SELECTORS ---
-const selectUserState = (state: { user: UserState }) => state.user;
+const selectUserState = (state: RootState): UserState =>
+  state.dashboard.user;
 
-export const selectUsers = createSelector([selectUserState], (user) => user.users);
-export const selectUserLoading = createSelector([selectUserState], (user) => user.loading);
-export const selectUserError = createSelector([selectUserState], (user) => user.error);
+export const selectUsers = createSelector(
+  [selectUserState],
+  (user) => user.users
+);
+
+export const selectUserLoading = createSelector(
+  [selectUserState],
+  (user) => user.loading
+);
+
+export const selectUserError = createSelector(
+  [selectUserState],
+  (user) => user.error
+);

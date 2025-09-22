@@ -42,11 +42,11 @@ export default function Sidebar() {
                     </ListItemIcon>
                     <ListItemText primary="Dashboard" />
                 </ListItemButton>
-                <ListItemButton component={Link} href="/admin/users" sx={{ color: "#fff" }}>
+                <ListItemButton component={Link} href="/user" sx={{ color: "#fff" }}>
                     <ListItemIcon sx={{ color: "#fff" }}>
                         <PeopleIcon />
                     </ListItemIcon>
-                    <ListItemText primary="Users" />
+                    <ListItemText primary="User" />
                 </ListItemButton>
             </List>
         </Drawer>
