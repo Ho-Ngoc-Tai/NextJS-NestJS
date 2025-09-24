@@ -24,7 +24,6 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials');
     }
-
     const { password, ...result } = user;
     return result;
   }
@@ -36,7 +35,7 @@ export class AuthService {
       accessToken: this.jwtService.sign(payload, {
         secret: process.env.JWT_SECRET || 'demo_secret',
         expiresIn: '1h',
-      }),
+      }), 
       user,
     };
   }

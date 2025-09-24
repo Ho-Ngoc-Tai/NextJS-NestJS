@@ -1,11 +1,11 @@
+import { RootState } from "@/app/stores";
 import { createSlice, createSelector, PayloadAction } from "@reduxjs/toolkit";
-import type { RootState } from "@/app/stores";
 
 export interface User {
   id: number;
-  name: string;
   email: string;
-  phone?: string;
+  name: string;
+  phone?: number;
   website?: string;
 }
 
@@ -15,71 +15,69 @@ export interface UserState {
   error: string | null;
 }
 
-const initialState: UserState = {
-  users: [],
-  loading: false,
-  error: null,
+interface StateStyle {
+  user: UserState
+}
+
+const initialState: StateStyle = {
+  user: {
+    users: [],
+    loading: false,
+    error: null,
+  }
 };
 
 const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    fetchUsersRequest: (state) => {
-      state.loading = true;
-      state.error = null;
-    },
-    fetchUsersSuccess: (state, action: PayloadAction<User[]>) => {
-      state.loading = false;
-      state.users = action.payload;
-    },
-    fetchUsersFailure: (state, action: PayloadAction<string>) => {
-      state.loading = false;
-      state.error = action.payload;
-    },
+    // --- CRUD ---
     addUser: (state, action: PayloadAction<User>) => {
-      state.users.push(action.payload);
+      state.user.users.push(action.payload);
     },
     updateUser: (state, action: PayloadAction<User>) => {
-      const idx = state.users.findIndex((u) => u.id === action.payload.id);
-      if (idx >= 0) state.users[idx] = action.payload;
+      const idx = state.user.users.findIndex((u) => u.id === action.payload.id);
+      if (idx !== -1) {
+        state.user.users[idx] = { ...state.user.users[idx], ...action.payload };
+      }
     },
     removeUser: (state, action: PayloadAction<number>) => {
-      state.users = state.users.filter((u) => u.id !== action.payload);
+      state.user.users = state.user.users.filter((u) => u.id !== action.payload);
     },
     clearUsers: (state) => {
-      state.users = [];
+      state.user.users = [];
+    },
+
+    // --- FETCH API ---
+    fetchUsersRequest: (state) => {
+      state.user.loading = true;
+      state.user.error = null;
+    },
+    fetchUsersSuccess: (state, action: PayloadAction<User[]>) => {
+      state.user.loading = false;
+      state.user.users = action.payload;
+    },
+    fetchUsersFailure: (state, action: PayloadAction<string>) => {
+      state.user.loading = false;
+      state.user.error = action.payload;
     },
   },
 });
 
-export const {
-  fetchUsersRequest,
-  fetchUsersSuccess,
-  fetchUsersFailure,
-  addUser,
+export const { addUser,
   updateUser,
   removeUser,
   clearUsers,
-} = userSlice.actions;
-
+  fetchUsersRequest,
+  fetchUsersSuccess,
+  fetchUsersFailure, } =
+  userSlice.actions;
 export default userSlice.reducer;
 
 // --- SELECTORS ---
-const selectUserState = (state: RootState): UserState =>
-  state.dashboard.user;
+const selectUserState = (state: RootState ) => state.dashboard.user;
 
-export const selectUsers = createSelector(
-  [selectUserState],
-  (user) => user.users
-);
-
-export const selectUserLoading = createSelector(
-  [selectUserState],
-  (user) => user.loading
-);
-
-export const selectUserError = createSelector(
-  [selectUserState],
-  (user) => user.error
-);
+export const makeUser = createSelector(selectUserState, (state) => state.user);
+// export const selectUsers = createSelector([selectUserState], (user) => user.users);
+// export const selectUserLoading = createSelector([selectUserState], (user) => user.loading);
+// export const selectUserError = createSelector([selectUserState], (user) => user.error);

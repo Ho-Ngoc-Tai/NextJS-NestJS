@@ -8,8 +8,7 @@ import {
     addUser,
     updateUser,
     removeUser,
-    selectUsers,
-    selectUserLoading,
+    makeUser,
 } from "@/app/stores/reducers/dashboard/userSlice";
 import { AppDispatch } from "@/app/stores";
 
@@ -35,9 +34,8 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 
 export default function UsersPage() {
-    const users = useSelector(selectUsers);
-    const loading = useSelector(selectUserLoading);
     const dispatch = useDispatch<AppDispatch>();
+    const user = useSelector(makeUser); // chỉ cần gọi 1 lần
 
     const [searchText, setSearchText] = useState("");
     const [page, setPage] = useState(1);
@@ -63,7 +61,7 @@ export default function UsersPage() {
     }, [dispatch]);
 
     // Lọc users theo searchText
-    const filteredUsers = users.filter(
+    const filteredUsers = user.users.filter(
         (u) =>
             u.name.toLowerCase().includes(searchText.toLowerCase()) ||
             u.email.toLowerCase().includes(searchText.toLowerCase())
@@ -96,7 +94,8 @@ export default function UsersPage() {
         if (isEdit) {
             dispatch(updateUser(selectedUser));
         } else {
-            const maxId = users.length > 0 ? Math.max(...users.map((u) => u.id)) : 0;
+            const maxId =
+                user.users.length > 0 ? Math.max(...user.users.map((u) => u.id)) : 0;
             dispatch(addUser({ ...selectedUser, id: maxId + 1 }));
         }
         handleCloseForm();
@@ -116,11 +115,9 @@ export default function UsersPage() {
     return (
         <Box sx={{ p: 3 }}>
             {/* Header */}
-            <Box
-                sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
-            >
+            <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
                 <Typography variant="h4" gutterBottom>
-                    User
+                    Users
                 </Typography>
                 <Box sx={{ display: "flex", gap: 1 }}>
                     <TextField
@@ -145,7 +142,7 @@ export default function UsersPage() {
             </Box>
 
             {/* Table */}
-            {loading ? (
+            {user.loading ? (
                 <Typography>Đang tải...</Typography>
             ) : (
                 <TableContainer component={Paper}>
@@ -161,20 +158,20 @@ export default function UsersPage() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {paginatedUsers.map((user) => (
-                                <TableRow key={user.id}>
-                                    <TableCell>{user.id}</TableCell>
-                                    <TableCell>{user.name}</TableCell>
-                                    <TableCell>{user.email}</TableCell>
-                                    <TableCell>{user.phone}</TableCell>
-                                    <TableCell>{user.website}</TableCell>
+                            {paginatedUsers.map((u) => (
+                                <TableRow key={u.id}>
+                                    <TableCell>{u.id}</TableCell>
+                                    <TableCell>{u.name}</TableCell>
+                                    <TableCell>{u.email}</TableCell>
+                                    <TableCell>{u.phone}</TableCell>
+                                    <TableCell>{u.website}</TableCell>
                                     <TableCell>
                                         <Button
                                             variant="contained"
                                             color="primary"
                                             size="small"
                                             sx={{ mr: 1 }}
-                                            onClick={() => handleOpenForm(user)}
+                                            onClick={() => handleOpenForm(u)}
                                         >
                                             Sửa
                                         </Button>
@@ -182,7 +179,7 @@ export default function UsersPage() {
                                             variant="contained"
                                             color="error"
                                             size="small"
-                                            onClick={() => handleOpenDelete(user)}
+                                            onClick={() => handleOpenDelete(u)}
                                         >
                                             Xóa
                                         </Button>

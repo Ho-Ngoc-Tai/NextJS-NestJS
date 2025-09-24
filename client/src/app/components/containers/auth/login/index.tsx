@@ -11,32 +11,30 @@ import {
     Typography,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import router, { useRouter } from "next/navigation";
-import { loginRequest } from "@/app/stores/reducers/authSlice";
-import { makeSelectAuthError, makeSelectAuthLoading, makeSelectAuthUser } from "@/app/stores/reducers/authSlice";
+import { useRouter } from "next/navigation";
+import { loginRequest, makeAuth } from "@/app/stores/reducers/authSlice";
+// import { makeSelectAuthError, makeSelectAuthLoading, makeSelectAuthUser } from "@/app/stores/reducers/authSlice";
 
 export default function LoginPage() {
     const [tab, setTab] = useState(0);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const loading = useSelector(makeSelectAuthLoading);
-    const error = useSelector(makeSelectAuthError);
-    const user = useSelector(makeSelectAuthUser);
-
-    const dispatch = useDispatch(); // Replace with actual dispatch from Redux
+    // const loading = useSelector(makeSelectAuthLoading);
+    // const error = useSelector(makeSelectAuthError);
+    // const user = useSelector(makeSelectAuthUser);
+    const login = useSelector(makeAuth)
+    const dispatch = useDispatch();
     const router = useRouter();
 
     const handleLogin = () => {
-        // Dispatch login action
         dispatch(loginRequest({ email, password }));
     }
 
-    //Redirect admim khi login thành công
     useEffect(() => {
-        if (user) {
+        if (login?.user) {
             router.push("/dashboard");
         }
-    }, [user, router]);
+    }, [login?.user]);
 
     return (
         <Box
@@ -78,14 +76,14 @@ export default function LoginPage() {
                             fullWidth
                             sx={{ mt: 2 }}
                             onClick={handleLogin}
-                            disabled={loading}   // khi đang login thì disable nút
+                            disabled={login.loading}   // khi đang login thì disable nút
                         >
-                            {loading ? "Logging in..." : "Submit"}
+                            {login.loading ? "Logging in..." : "Submit"}
                         </Button>
 
-                        {error && (
+                        {login.error && (
                             <Typography color="error" mt={2} textAlign="center">
-                                {error}
+                                {login.error}
                             </Typography>
                         )}
                         <Typography variant="body2" textAlign="center" mt={2}>
@@ -111,14 +109,14 @@ export default function LoginPage() {
                             fullWidth
                             sx={{ mt: 2 }}
                             // onClick={handleRegister}
-                            disabled={loading}   // khi đang login thì disable nút
+                            disabled={login.loading}   // khi đang login thì disable nút
                         >
-                            {loading ? "Logging in..." : "Submit"}
+                            {login.loading ? "Logging in..." : "Submit"}
                         </Button>
 
-                        {error && (
+                        {login.error && (
                             <Typography color="error" mt={2} textAlign="center">
-                                {error}
+                                {login.error}
                             </Typography>
                         )}
                     </Box>
